@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Proud of You - Full Scrapbook</title>
+        <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fredoka+One&display=swap" rel="stylesheet">
+        <style>
+        /* --- CSS UTAMA --- */
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+        body {
+            background-color: #222; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier Prime', monospace;
+            padding: 20px;
+            overscroll-behavior: none;
+        }
+
+        /* Container Jendela Browser */
+        .window-container {
+            position: relative; 
+            width: 95%; 
+            max-width: 1100px; 
+            height: 90vh; 
+            background-color: #ffe4e1; 
+            background-image: 
+                linear-gradient(white 2px, transparent 2px),
+                linear-gradient(90deg, white 2px, transparent 2px);
+            background-size: 50px 50px;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid #ffb6c1;
+        }
+
+        .window-header {
+            background-color: #fff0f5;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 2px solid #ffb6c1;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .red { background-color: #ff5f56; } .yellow { background-color: #ffbd2e; } .green { background-color: #27c93f; }
+
+        /* Area Konten yang Bisa di-Scroll */
+        .window-content {
+            flex-grow: 1;
+            overflow-y: auto; 
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory; 
+            position: relative;
+        }
+
+        /* --- TOMBOL NEXT --- */
+        .next-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(216, 27, 96, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000; 
+        }
+
+        .next-btn:hover {
+            background-color: #d81b60;
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(216, 27, 96, 0.6);
+        }
+
+        /* --- GAYA UMUM SCRAPBOOK --- */
+        .scrapbook-slide {
+            position: relative;
+            height: 100%; 
+            min-height: 600px; 
+            width: 100%;
+            overflow: hidden;
+            border-bottom: 3px dashed #ff80ab;
+            scroll-snap-align: start; 
+            padding: 30px 20px;
+        }
+
+        /* Hierarki Z-Index agar Teks Tidak Ketutupan */
+        .text-layer { z-index: 30 !important; } 
+        .sticker-layer { z-index: 15 !important; } 
+        .photo-layer { z-index: 5; } 
+        .deco-layer { z-index: 2; } 
+
+        .main-title {
+            font-family: 'Fredoka One', cursive;
+            color: #d81b60;
+            text-align: center;
+            font-size: 3.5rem;
+            margin-top: 10px;
+            text-shadow: 2px 2px 0px #ffabba;
+            position: relative;
+        }
+        .subtitle {
+            text-align: center; color: #ad1457; font-size: 1.1rem; margin-bottom: 20px; position: relative;
+        }
+
+        /* Item Interaktif */
+        .scrapbook-item {
+            position: absolute;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        /* Hover buat interaksi ringan */
+        .scrapbook-item:hover {
+            transform: scale(1.08) rotate(0deg) !important; 
+            filter: drop-shadow(0 15px 25px rgba(216, 27, 96, 0.3));
+        }
+
+        .polaroid {
+            background: white; padding: 10px 10px 25px 10px;
+            box-shadow: 3px 5px 15px rgba(0,0,0,0.1);
+        }
+        .polaroid img { width: 160px; height: 160px; object-fit: cover; border: 1px solid #eee; }
+        .polaroid-2 img { width: 130px; height: 190px; } 
+        .caption { color: #c2185b; margin-top: 10px; font-size: 0.9rem; text-align: center; font-weight: bold;}
+        
+        .sticker {
+            font-size: 1rem; color: #880e4f;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px; border-radius: 20px;
+            border: 2px dashed #ff80ab;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.05);
+            line-height: 1.4;
+        }
+        .decoration img { max-width: 100%; height: auto; }
+
+
+        /* --- BAGIAN 1: Tema Kamera --- */
+        .slide-1 .polaroid-1 { top: 25%; left: 15%; transform: rotate(-8deg); }
+        .slide-1 .polaroid-2 { bottom: 15%; right: 18%; transform: rotate(6deg); }
+        .slide-1 .deco-camera { top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(3deg); width: 350px; opacity: 0.9; }
+        .slide-1 .sticker-1 { top: 35%; left: 35%; transform: rotate(-5deg); }
+        .slide-1 .sticker-2 { bottom: 30%; right: 35%; transform: rotate(4deg); }
+        .slide-1 .cutout-text {
+            bottom: 12%; left: 45%; font-family: 'Fredoka One', cursive; color: #ff4081;
+            font-size: 4rem; line-height: 0.9; transform: rotate(-10deg);
+            text-shadow: 3px 3px 0 white;
+        }
+
+        /* --- BAGIAN 2: Tema Mobil --- */
+        .slide-2 .main-title { margin-top: 20px; font-size: 3rem; }
+        .slide-2 .deco-car { bottom: 15%; left: 10%; width: 450px; transform: rotate(-2deg); }
+        .slide-2 .polaroid-3 { top: 25%; right: 20%; transform: rotate(5deg); }
+        .slide-2 .sticker-star1 { top: 20%; left: 25%; font-size: 2rem; color: #ffd700; }
+        .slide-2 .sticker-star2 { top: 45%; right: 40%; font-size: 1.5rem; color: #ff69b4; transform: rotate(15deg); }
+        .slide-2 .sticker-star3 { top: 15%; right: 15%; font-size: 2.5rem; color: #ffd700; transform: rotate(-10deg); }
+        .slide-2 .sticker-quote { bottom: 35%; left: 20%; background: #fff0f5; transform: rotate(-3deg); max-width: 250px;}
+
+        /* --- BAGIAN 3: Tema Kue --- */
+        .slide-3 .main-title { font-size: 3.2rem; color: #c2185b; margin-top: 20px;}
+        .slide-3 .deco-cake { bottom: 15%; right: 15%; width: 280px; transform: rotate(3deg); }
+        .slide-3 .polaroid-4 { top: 30%; left: 20%; transform: rotate(-4deg); }
+        .slide-3 .polaroid-5 { top: 45%; right: 40%; transform: rotate(8deg); }
+        .slide-3 .sticker-heart1 { top: 25%; right: 25%; font-size: 3rem; color: #ff4081; opacity: 0.8; }
+        .slide-3 .sticker-heart2 { bottom: 40%; left: 30%; font-size: 2rem; color: #ff80ab; transform: rotate(-15deg); opacity: 0.6; }
+        .slide-3 .final-text {
+            bottom: 12%; width: 100%; text-align: center; font-weight: bold; color: #d81b60; font-size: 1.5rem;
+            padding: 0 40px; line-height: 1.4;
+        }
+
+        /* =========================================
+           RESPONSIVE MOBILE DESIGN (Layar < 768px) 
+           FIX: Penataan Ulang Posisi agar Rapi & Centered
+           ========================================= */
+        @media (max-width: 768px) {
+            body { padding: 0; } 
+            .window-container {
+                width: 100%; height: 100vh; border-radius: 0; border: none; max-width: 100%;
+            }
+            .scrapbook-slide { min-height: 680px; padding: 20px 10px; } 
+            
+            .main-title { font-size: 2.2rem; margin-top: 15px; }
+            .subtitle { font-size: 0.9rem; margin-bottom: 10px; }
+            .next-btn { bottom: 15px; right: 15px; font-size: 0.9rem; padding: 10px 20px; }
+
+            /* Perkecil Gambar */
+            .polaroid { padding: 6px 6px 15px 6px; }
+            .polaroid img { width: 100px; height: 100px; }
+            .polaroid-2 img { width: 90px; height: 135px; } 
+            .caption { font-size: 0.75rem; margin-top: 5px; }
+            .sticker { font-size: 0.8rem; padding: 6px 12px; }
+            
+            /* Penyesuaian Slide 1 */
+            .slide-1 .polaroid-1 { top: 18%; left: 5%; }
+            .slide-1 .polaroid-2 { top: 25%; right: 5%; bottom: auto; }
+            .slide-1 .deco-camera { width: 220px; top: 48%; left: 50%; transform: translateX(-50%) rotate(3deg); }
+            .slide-1 .sticker-1 { top: 32%; left: 5%; }
+            .slide-1 .sticker-2 { top: 62%; right: 5%; bottom: auto; }
+            /* Teks dipindah ke tengah bawah */
+            .slide-1 .cutout-text { font-size: 3rem; bottom: 15%; left: 0; width: 100%; text-align: center; transform: rotate(-5deg); }
+
+            /* Penyesuaian Slide 2 */
+            .slide-2 .main-title { font-size: 1.8rem; }
+            .slide-2 .polaroid-3 { top: 18%; right: 5%; }
+            .slide-2 .deco-car { width: 280px; top: 42%; left: 50%; transform: translateX(-50%) rotate(-2deg); bottom: auto; } 
+            /* Quote dirapikan ke tengah */
+            .slide-2 .sticker-quote { 
+                bottom: 15%; left: 5%; width: 90%; max-width: none; 
+                transform: rotate(-2deg); text-align: center; margin: 0 auto;
+            } 
+            .slide-2 .sticker-star1 { left: 10%; top: 18%; }
+            .slide-2 .sticker-star2 { right: 20%; top: 45%; }
+
+            /* Penyesuaian Slide 3 */
+            .slide-3 .main-title { font-size: 2rem; }
+            .slide-3 .polaroid-4 { top: 18%; left: 5%; }
+            .slide-3 .polaroid-5 { top: 32%; right: 5%; }
+            .slide-3 .deco-cake { width: 180px; top: 45%; left: 50%; transform: translateX(-50%) rotate(3deg); bottom: auto; }
+            .slide-3 .sticker-heart1 { right: 10%; top: 15%; }
+            .slide-3 .sticker-heart2 { left: 10%; top: 45%; bottom: auto; }
+            /* Teks akhir dipaskan tengah */
+            .slide-3 .final-text { 
+                font-size: 1rem; 
+                bottom: 15%; 
+                left: 0; width: 100%; padding: 0 20px;
+            }
+        }
+        </style>
+    </head>
+    <body>
+        <div class="window-container">
+            <button id="nextBtn" class="next-btn">Next ➔</button>
+            <div class="window-header">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="window-content" id="scrollArea">
+                <section class="scrapbook-slide slide-1" id="slide0">
+                    <h1 class="main-title text-layer">PROUD OF YOU</h1>
+                    <p class="subtitle text-layer">Every little step you take matters.</p>
+                    <div class="scrapbook-item polaroid polaroid-1 photo-layer">
+                        <img src="./foto 1.jpeg" alt="Foto 1">
+                        <div class="caption">My Favorite ➔</div>
+                    </div>
+                    <div class="scrapbook-item polaroid polaroid-2 photo-layer">
+                        <img src="./uno.jpg" alt="Kartu">
+                    </div>
+                    <img class="scrapbook-item decoration deco-camera deco-layer" src="./kamera pink.png" alt="Kamera Pink">
+                    <div class="scrapbook-item sticker sticker-1 sticker-layer">So proud of
+                        <br>what you've become
+                    </div>
+                    <div class="scrapbook-item sticker sticker-2 sticker-layer">Keep shining!</div>
+                    <div class="scrapbook-item cutout-text text-layer">love
+                        <br>you
+                    </div>
+                </section>
+                
+                <section class="scrapbook-slide slide-2" id="slide1">
+                    <h1 class="main-title text-layer">Keep Moving Forward</h1>
+                    <div class="scrapbook-item polaroid polaroid-3 photo-layer">
+                        <img src="./foto 3.jpeg" alt="Foto Mobil">
+                        <div class="caption">Enjoy the ride!</div>
+                    </div>
+                    <img class="scrapbook-item decoration deco-car deco-layer" src="./รูปรถแต่งงานการ์ตูนวาดด้วยมือ รถลูกโป่งหรูหราสีชมพู PNG , ภาพตัดปะรถยนต์, รถสปอร์ต, รถหรูภาพ PNG และ PSD สำหรับดาวน์โหลดฟรี.jpg" alt="Mobil Pink">
+                    <div class="scrapbook-item decoration sticker-star1 sticker-layer">★</div>
+                    <div class="scrapbook-item decoration sticker-star2 sticker-layer">★</div>
+                    <div class="scrapbook-item decoration sticker-star3 sticker-layer">✨</div>
+                    <div class="scrapbook-item sticker sticker-quote sticker-layer">"Growth isn’t always about the big wins; sometimes it’s about not giving up. I’m so proud of your resilience."</div>
+                </section>
+                
+                <section class="scrapbook-slide slide-3" id="slide2">
+                    <h1 class="main-title text-layer">Sweet Success</h1>
+                    <p class="subtitle text-layer">Celebrating YOU today!</p>
+                    <div class="scrapbook-item polaroid polaroid-4 photo-layer">
+                        <img src="./download (18).jpg" alt="Foto Kue">
+                    </div>
+                    <div class="scrapbook-item polaroid polaroid-5 photo-layer">
+                        <img src="./foto 5.jpeg" alt="Foto Berdua">
+                        <div class="caption">So proud of you! ❤️</div>
+                    </div>
+                    <img class="scrapbook-item decoration deco-cake deco-layer" src="./cake nastar.jpg" alt="Kue Pink">
+                    <div class="scrapbook-item decoration sticker-heart1 sticker-layer">💖</div>
+                    <div class="scrapbook-item decoration sticker-heart2 sticker-layer">🎈</div>
+                    <div class="scrapbook-item final-text text-layer">"Watching your journey has been a privilege. You’ve grown so much,
+                         and I couldn't be prouder."</div>
+                </section>
+            </div>
+        </div>
+        <script>
+        // JAVASCRIPT UNTUK INTERAKSI Z-INDEX KLIK (TOGGLE)
+        const items = document.querySelectorAll('.scrapbook-item');
+        const scrollArea = document.getElementById('scrollArea');
+
+        items.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation(); // Biar kliknya gak tembus ke scrollArea
+                
+                // Kalau item ini udah di depan (z-index 999), balikin ke asal
+                if (this.style.zIndex === '999') {
+                    this.style.zIndex = ''; // Reset, ngikutin CSS asli
+                } else {
+                    // Reset semua item lain dulu biar turun semua
+                    items.forEach(i => i.style.zIndex = '');
+                    // Bawa item yang lagi diklik ke paling depan
+                    this.style.zIndex = '999';
+                }
+            });
+        });
+
+        // Kalau klik di sembarang tempat (background), kembalikan semua item ke posisi semula
+        scrollArea.addEventListener('click', () => {
+            items.forEach(i => i.style.zIndex = '');
+        });
+        
+        // JAVASCRIPT UNTUK TOMBOL NEXT & ANIMASI SCROLL
+        const nextBtn = document.getElementById('nextBtn');
+        const slides = document.querySelectorAll('.scrapbook-slide');
+        const totalSlides = slides.length;
+
+        nextBtn.addEventListener('click', () => {
+            const scrollPosition = scrollArea.scrollTop;
+            const slideHeight = slides[0].offsetHeight;
+            let currentIndex = Math.round(scrollPosition / slideHeight);
+            let nextIndex = currentIndex + 1;
+
+            if (nextIndex >= totalSlides) {
+                nextIndex = 0; // Kembali ke atas
+            }
+
+            slides[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Ubah teks tombol menjadi Top saat di slide terakhir
+        scrollArea.addEventListener('scroll', () => {
+            const scrollPosition = scrollArea.scrollTop;
+            const slideHeight = slides[0].offsetHeight;
+            let currentIndex = Math.round(scrollPosition / slideHeight);
+
+            if (currentIndex === totalSlides - 1) {
+                nextBtn.innerHTML = "Top ⬆️"; 
+            } else {
+                nextBtn.innerHTML = "Next ➔"; 
+            }
+        });
+        </script>
+    </body>
+</html>
